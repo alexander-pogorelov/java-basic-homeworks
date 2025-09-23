@@ -1,15 +1,15 @@
 package ru.otus.java.basic.homeworks.homework8;
 
 public class Homework8 {
-    private final static int ROW_SIZE = 4;
-    private final static int COLUMN_SIZE = 4;
+    private static final int ROW_SIZE = 4;
+    private static final int COLUMN_SIZE = 4;
 
     public static void main(String[] args) {
         for (String[][] array : getArrays()) {
             print2dArray(array);
             try {
                 int sum = sumIntValues(array);
-                System.out.printf("Сумма элеентов массива равна: %s.%n", sum);
+                System.out.printf("Сумма элементов массива равна: %s.%n", sum);
             } catch (AppArraySizeException | AppArrayDataException e) {
                 System.out.println(e.getMessage());
             }
