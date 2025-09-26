@@ -56,7 +56,7 @@ public class Homework9 {
     }
 
     private static List<Integer> createSequence(int min, int max) {
-        int capacity = max - min;
+        int capacity = max - min + 1;
         if (min > max) {
             throw new IllegalArgumentException(String.format("Min число %d не может быть больше Max числа %d", min, max));
         }
