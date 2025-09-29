@@ -19,7 +19,7 @@ public class PhoneBook {
     }
 
     public Set<Phone> find(Person person) {
-        return getPhones(person);
+        return new HashSet<>(getPhones(person));
     }
 
     public boolean containsPhoneNumber(Phone phone) {
@@ -27,11 +27,7 @@ public class PhoneBook {
     }
 
     private Set<Phone> getPhones(Person person) {
-        Set<Phone> personPhones = book.get(person);
-        if (personPhones == null) {
-            personPhones = new HashSet<>();
-        }
-        return personPhones;
+        return book.computeIfAbsent(person, k -> new HashSet<>());
     }
 
     private void addPhone(Phone phone) throws DuplicatePhoneException {

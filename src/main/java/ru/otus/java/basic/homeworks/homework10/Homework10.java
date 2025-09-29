@@ -25,7 +25,6 @@ public class Homework10 {
         try {
             PhoneBook book = new PhoneBook();
             book.add(person1, phone1);
-//            book.add(person2, new Phone(375_29_111_11_11L));
             book.add(person2, phone2);
 
             printPersonPhoneNumbers(book, person5);
