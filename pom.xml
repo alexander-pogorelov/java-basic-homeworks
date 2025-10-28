@@ -7,6 +7,12 @@
     <groupId>ru.otus.java.basic</groupId>
     <artifactId>java-basic-homeworks</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>chat-sever</module>
+        <module>chat-client</module>
+        <module>chat-common</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
