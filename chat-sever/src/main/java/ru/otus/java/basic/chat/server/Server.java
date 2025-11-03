@@ -8,11 +8,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Server {
     private final int port;
-    private final Map<String,ClientHandler> clients;
+    private final Map<String, ClientHandler> clients;
+    private final AuthenticationProvider authProvider;
 
     public Server(int port) {
         this.port = port;
         this.clients = new ConcurrentHashMap<>();
+        this.authProvider = new InMemoryAuthenticationProvider(this);
+        this.authProvider.initialize();
     }
 
     public void start() {
@@ -21,7 +24,6 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 ClientHandler clientHandler = new ClientHandler(this, socket);
-                subscribe(clientHandler);
                 clientHandler.handle();
             }
         } catch (IOException e) {
@@ -45,7 +47,7 @@ public class Server {
         }
     }
 
-    public void sendPrivateMessage(ClientHandler fromClient, String toUsername, String message) {
+    public void sendPrivateMessage(ClientHandler fromClient, String toUsername, String message, boolean isServiceMessage) {
         ClientHandler toClient = clients.get(toUsername);
         if (toClient == null) {
             fromClient.sendMessage(String.format("server: пользователь с ником %s не найден", toUsername));
@@ -55,11 +57,21 @@ public class Server {
             fromClient.sendMessage("server: Вы отправили сообщение самому себе");
             return;
         }
-        toClient.sendMessage(fromClient.getUsername() + ": " + message);
-        fromClient.sendMessage(fromClient.getUsername() + ": " + message);
+        toClient.sendMessage(isServiceMessage ? message : fromClient.getUsername() + ": " + message);
+        if (!isServiceMessage) {
+            fromClient.sendMessage(fromClient.getUsername() + ": " + message);
+        }
     }
 
     public void handleUnknownCommand(ClientHandler fromClient) {
         fromClient.sendMessage("server: неизвестная команда");
+    }
+
+    public boolean isUsernameBusy(String username) {
+        return clients.get(username) != null;
+    }
+
+    public AuthenticationProvider getAuthProvider() {
+        return authProvider;
     }
 }

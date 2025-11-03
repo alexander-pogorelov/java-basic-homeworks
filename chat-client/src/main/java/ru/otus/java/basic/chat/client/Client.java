@@ -28,6 +28,16 @@ public class Client {
                             if (message.equalsIgnoreCase("/exitok")) {
                                 break;
                             }
+                            if (message.equalsIgnoreCase("/kickok")) {
+                                System.out.println("Вас отключили от чата");
+                                break;
+                            }
+                            if (message.equals("/authok")) {
+                                System.out.println("Удалось успешно войти в чат под именем пользователя " + message.trim().split("\\s+")[1]);
+                            }
+                            if (message.equals("/regok")) {
+                                System.out.println("Удалось успешно пройти регистрацию под ником " + message.trim().split("\\s+")[1]);
+                            }
                         } else {
                             System.out.println(message);
                         }
@@ -41,9 +51,6 @@ public class Client {
             while (true) {
                 String message = scanner.nextLine();
                 dsc.write(message);
-                if (message.equalsIgnoreCase("/exit")) {
-                    break;
-                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -53,6 +60,7 @@ public class Client {
     public void disconnect() {
         try {
             dsc.close();
+            System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
