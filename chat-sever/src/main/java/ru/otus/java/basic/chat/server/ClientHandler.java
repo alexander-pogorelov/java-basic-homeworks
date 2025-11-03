@@ -1,6 +1,7 @@
 package ru.otus.java.basic.chat.server;
 
 import ru.otus.java.basic.chat.DataStreamClient;
+import ru.otus.java.basic.chat.User;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -10,7 +11,7 @@ public class ClientHandler {
     private final Server server;
     private final DataStreamClient dsc;
     private final int clientPort;
-    private String username;
+    private User user;
     private boolean authenticated;
 
     public ClientHandler(Server server, Socket socket) throws IOException {
@@ -43,7 +44,7 @@ public class ClientHandler {
                             if (server.getAuthProvider().authenticate(this, parts[1], parts[2])) {
                                 server.subscribe(this);
                                 authenticated = true;
-                                sendMessage("Вы подключились с ником: " + username);
+                                sendMessage("Вы подключились с ником: " + user.getUsername());
                                 break;
                             }
                             continue;
@@ -58,7 +59,7 @@ public class ClientHandler {
                             if (server.getAuthProvider().register(this, parts[1], parts[2], parts[3])) {
                                 server.subscribe(this);
                                 authenticated = true;
-                                sendMessage("Вы подключились с ником: " + username);
+                                sendMessage("Вы подключились с ником: " + user.getUsername());
                                 break;
                             }
                             continue;
@@ -69,22 +70,37 @@ public class ClientHandler {
                 while (authenticated) {
                     String message = dsc.read();
                     if (message.startsWith("/")) {
-                        if (message.equalsIgnoreCase("/exit")) {
+                        if (message.equals("/exit")) {
                             sendMessage("/exitok");
                             break;
                         }
+                        // /w username message
                         if (message.startsWith("/w ")) {
                             String[] parts = message.trim().split("\\s+", 3);
-                            server.sendPrivateMessage(this, parts[1], parts[2]);
+                            server.sendPrivateMessage(this, parts[1], parts[2], false);
+                            continue;
+                        }
+                        // /kick username
+                        if (message.startsWith("/kick ")) {
+                            if (!user.isAdmin()) {
+                                server.handleUnknownCommand(this);
+                                continue;
+                            }
+                            String[] parts = message.trim().split("\\s+");
+                            if (parts.length != 2) {
+                                sendMessage("Неверный формат команды '/kick username'");
+                                continue;
+                            }
+                            server.sendPrivateMessage(this, parts[1], "/kickok", true);
                             continue;
                         }
                         server.handleUnknownCommand(this);
                     } else {
-                        server.sendBroadcastMessage(username + ": " + message);
+                        server.sendBroadcastMessage(user.getUsername() + ": " + message);
                     }
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                // клиент отключился или ошибка сокета
             } finally {
                 disconnect();
             }
@@ -100,11 +116,11 @@ public class ClientHandler {
     }
 
     public String getUsername() {
-        return username;
+        return user != null ? user.getUsername() : "";
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void disconnect() {
@@ -120,11 +136,11 @@ public class ClientHandler {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         ClientHandler that = (ClientHandler) o;
-        return Objects.equals(username, that.username);
+        return Objects.equals(user.getUsername(), that.user.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(username);
+        return Objects.hashCode(user.getUsername());
     }
 }

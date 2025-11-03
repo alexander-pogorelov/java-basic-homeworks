@@ -1,5 +1,6 @@
 package ru.otus.java.basic.chat.server;
 
+import ru.otus.java.basic.chat.Role;
 import ru.otus.java.basic.chat.User;
 import ru.otus.java.basic.chat.ValidationException;
 import ru.otus.java.basic.chat.Validator;
@@ -23,17 +24,17 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean authenticate(ClientHandler clientHandler, String login, String password) {
-        String authUsername = getUsernameByLoginAndPassword(login, password);
-        if (authUsername == null) {
+        User user = getUserByLoginAndPassword(login, password);
+        if (user == null) {
             clientHandler.sendMessage("Некорректный логин/пароль");
             return false;
         }
-        if (server.isUsernameBusy(authUsername)) {
+        if (server.isUsernameBusy(user.getUsername())) {
             clientHandler.sendMessage("Указанная учетная запись уже используется");
             return false;
         }
-        clientHandler.setUsername(authUsername);
-        clientHandler.sendMessage("/authok" + authUsername);
+        clientHandler.setUser(user);
+        clientHandler.sendMessage("/authok" + user.getUsername());
         return true;
     }
 
@@ -54,22 +55,24 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
             clientHandler.sendMessage("Такое имя пользователя уже занято");
             return false;
         }
-        users.add(new User(login, password, username));
-        clientHandler.setUsername(username);
+        User user = new User(login, password, username, Role.USER);
+        users.add(user);
+        clientHandler.setUser(user);
         clientHandler.sendMessage("/regok" + username);
         return true;
     }
 
     private void addDefaultUses() {
-        users.add(new User("qwe", "qwe", "qwe1"));
-        users.add(new User("asd", "asd", "asd1"));
-        users.add(new User("zxc", "zxc", "zxc1"));
+        users.add(new User("qwe", "qwe", "qwe1", Role.USER));
+        users.add(new User("asd", "asd", "asd1", Role.USER));
+        users.add(new User("zxc", "zxc", "zxc1", Role.USER));
+        users.add(new User("adm", "adm", "admin", Role.ADMIN));
     }
 
-    private String getUsernameByLoginAndPassword(String login, String password) {
+    private User getUserByLoginAndPassword(String login, String password) {
         for (User user : users) {
             if (user.getLogin().equalsIgnoreCase(login) && user.getPassword().equals(password)) {
-                return user.getUsername();
+                return user;
             }
         }
         return null;
