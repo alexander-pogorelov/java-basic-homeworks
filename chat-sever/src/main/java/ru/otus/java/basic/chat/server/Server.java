@@ -14,7 +14,7 @@ public class Server {
     public Server(int port) {
         this.port = port;
         this.clients = new ConcurrentHashMap<>();
-        this.authProvider = new InMemoryAuthenticationProvider(this);
+        this.authProvider = new DatabaseAuthenticationProvider(this);
         this.authProvider.initialize();
     }
 
