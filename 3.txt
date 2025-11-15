@@ -1,0 +1,15 @@
+The Complete History of Java Programming Language
+
+The programming language Java was developed by James Gosling and his team at Sun Microsystems in the early 1990s. Initially the goal was to build a platform independent language for embedded devices such as set-top boxes and televisions.
+
+After exploring C++ (which proved too heavy and too closely tied to platform dependencies), the team embarked on an entirely new project codenamed the “Green Project”.
+
+Origin and Naming of Java
+The project first used the name “Green” (internally “Greentalk” with extension .gt), then was renamed “Oak” (inspired by an oak tree outside Gosling’s office). When Sun attempted to trademark “Oak,” they discovered it was already claimed by Oak Technologies, so a further rename was needed.
+
+In an interesting session guided by a naming consultant, the team generated dozens of candidate names. The name “Java” (after the Indonesian coffee bean) emerged as the one that cleared legal review. Although Gosling’s preferred name was “Lyric” and the team initially favoured “Silk,” “Java” became the official name.
+
+Evolution of Java
+From the outset Java was built around key design goals: robustness, portability, platform independence, high performance, and multithreading. Over the years the Java Class Library expanded from only a few hundred classes to thousands and the platform grew to support enterprise, mobile, and cloud applications.
+
+Since the first public release of JDK 1.0, Java has undergone continual revision via the Java Community Process (JCP).
