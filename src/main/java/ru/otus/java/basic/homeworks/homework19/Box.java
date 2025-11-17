@@ -32,25 +32,12 @@ public class Box <T extends Fruit> {
     }
 
     public void transferTo(Box<? super T> anotherBox) {
-        if (this.equals(anotherBox)) {
+        if (this == anotherBox) {
             return;
         }
         for (T item : items) {
             anotherBox.add(item);
         }
         items.clear();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Box<?> box = (Box<?>) o;
-        if (this == o) return true;
-        return Objects.equals(items, box.items);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(items);
     }
 }
