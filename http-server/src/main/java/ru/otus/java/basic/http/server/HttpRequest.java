@@ -4,13 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
+    private final String rawRequest;
     private HttpMethod method;
     private String uri;
+    private String body;
     private final Map<String, String> params;
 
     public HttpRequest(String rawRequest) {
+        this.rawRequest = rawRequest;
         params = new HashMap<>();
-        parse(rawRequest);
+        parse();
     }
 
     public String getUri() {
@@ -21,6 +24,10 @@ public class HttpRequest {
         return params.get(name);
     }
 
+    public String getBody() {
+        return body;
+    }
+
     public boolean containsParameter(String name) {
         return params.containsKey(name);
     }
@@ -29,7 +36,7 @@ public class HttpRequest {
         return method + " " + uri;
     }
 
-    private void parse(String rawRequest) {
+    private void parse() {
         int left = rawRequest.indexOf(" ");
         int right = rawRequest.indexOf(" ", left + 1);
         method = HttpMethod.valueOf(rawRequest.substring(0, left));
@@ -43,11 +50,18 @@ public class HttpRequest {
                 params.put(keyValue[0], keyValue[1]);
             }
         }
+        if (method == HttpMethod.POST) {
+            body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
+        }
     }
 
-    public void info() {
+    public void info(boolean showRawRequest) {
         System.out.println("METHOD: " + method);
         System.out.println("URI: " + uri);
         System.out.println("PARAMS: " + params);
+        System.out.println("BODY: " + body);
+        if (showRawRequest) {
+            System.out.println(rawRequest);
+        }
     }
 }

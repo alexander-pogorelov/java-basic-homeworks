@@ -1,5 +1,7 @@
 package ru.otus.java.basic.http.server;
 
+import ru.otus.java.basic.http.server.application.ItemsStorage;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +15,7 @@ public class HttpServer {
     public HttpServer(int port) {
         this.port = port;
         this.dispatcher = new Dispatcher();
+        ItemsStorage.init();
     }
 
     public void start(int threadNumber) {
@@ -29,10 +32,12 @@ public class HttpServer {
                             int n = socket.getInputStream().read(buffer);
                             System.out.println("Запрос начал обрабатывать поток " + Thread.currentThread().getName());
                             if (n < 1) {
+                                System.out.println("Return " + Thread.currentThread().getName());
                                 return;
                             }
                             String rawRequest = new String(buffer, 0, n);
                             HttpRequest request = new HttpRequest(rawRequest);
+//                            request.info(true);
                             dispatcher.execute(request, socket.getOutputStream());
                             System.out.println("Запрос обработал поток " + Thread.currentThread().getName());
                         } catch (IOException e) {
