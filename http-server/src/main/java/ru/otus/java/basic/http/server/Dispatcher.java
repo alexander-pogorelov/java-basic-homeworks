@@ -1,6 +1,7 @@
 package ru.otus.java.basic.http.server;
 
 import ru.otus.java.basic.http.server.application.CreateItemsProcessor;
+import ru.otus.java.basic.http.server.application.DeleteItemsProcessor;
 import ru.otus.java.basic.http.server.application.GetItemsProcessor;
 import ru.otus.java.basic.http.server.exceptions.BadRequestException;
 import ru.otus.java.basic.http.server.processors.*;
@@ -25,6 +26,7 @@ public class Dispatcher {
         routes.put("GET /add", new CalculatorProcessor());
         routes.put("GET /shop/api/v1/items", new GetItemsProcessor());
         routes.put("POST /shop/api/v1/items", new CreateItemsProcessor());
+        routes.put("DELETE /shop/api/v1/items", new DeleteItemsProcessor());
         defaultNotFoundProcessor = new DefaultNotFoundProcessor();
         defaultStaticResourceProcessor = new DefaultStaticResourceProcessor();
     }
