@@ -60,12 +60,10 @@ public class HttpRequest {
     }
 
     public void info(boolean showRawRequest) {
-        logger.info("METHOD: " + method);
-        logger.info("URI: " + uri);
-        logger.info("PARAMS: " + params);
-        logger.info("BODY: " + body);
-        if (showRawRequest) {
-            logger.info(rawRequest);
-        }
+        logger.info("METHOD: {}", method);
+        logger.info("URI: {}", uri);
+        logger.info("PARAMS: {}", params);
+        logger.info("BODY: {}", body);
+        logger.debug(rawRequest);
     }
 }

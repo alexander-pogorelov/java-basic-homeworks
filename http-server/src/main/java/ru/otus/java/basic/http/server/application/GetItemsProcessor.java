@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.java.basic.http.server.HttpRequest;
 import ru.otus.java.basic.http.server.exceptions.BadRequestException;
-import ru.otus.java.basic.http.server.processors.DefaultNotFoundProcessor;
+import ru.otus.java.basic.http.server.exceptions.NotFoundException;
 import ru.otus.java.basic.http.server.processors.RequestProcessor;
 
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 
 public class GetItemsProcessor implements RequestProcessor {
     private static final Logger logger = LogManager.getLogger(GetItemsProcessor.class.getName());
-    private final RequestProcessor defaultNotFoundProcessor = new DefaultNotFoundProcessor();
 
     @Override
     public void execute(HttpRequest request, OutputStream output) throws IOException {
@@ -26,7 +25,7 @@ public class GetItemsProcessor implements RequestProcessor {
                 logger.debug("request contains id " + id);
                 Item item = ItemsStorage.getItem(id);
                 if (item == null) {
-                    defaultNotFoundProcessor.execute(request, output);
+                    throw new NotFoundException();
                 } else {
                     String itemJson = gson.toJson(item);
                     sendJsonResponse(output, itemJson);

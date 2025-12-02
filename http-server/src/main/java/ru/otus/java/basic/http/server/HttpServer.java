@@ -25,7 +25,7 @@ public class HttpServer {
         ExecutorService executor = Executors.newFixedThreadPool(threadNumber);
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-            logger.info("Сервер запущен на порту: " + port);
+            logger.info("Сервер запущен на порту: {}", port);
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
@@ -33,14 +33,14 @@ public class HttpServer {
                         try {
                             byte[] buffer = new byte[8192];
                             int n = socket.getInputStream().read(buffer);
-                            logger.info("Запрос начал обрабатывать поток " + Thread.currentThread().getName());
+                            logger.debug("Запрос начал обрабатывать поток {}", Thread.currentThread().getName());
                             if (n < 1) {
                                 return;
                             }
                             String rawRequest = new String(buffer, 0, n);
                             HttpRequest request = new HttpRequest(rawRequest);
                             dispatcher.execute(request, socket.getOutputStream());
-                            logger.info("Запрос обработал поток " + Thread.currentThread().getName());
+                            logger.debug("Запрос обработал поток {}", Thread.currentThread().getName());
                         } catch (IOException e) {
                             logger.error("Ошибка при обработке запроса: ", e);
                         } finally {
