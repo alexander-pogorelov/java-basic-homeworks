@@ -1,9 +1,13 @@
 package ru.otus.java.basic.http.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
+    private static final Logger logger = LogManager.getLogger(HttpRequest.class.getName());
     private final String rawRequest;
     private HttpMethod method;
     private String uri;
@@ -56,12 +60,10 @@ public class HttpRequest {
     }
 
     public void info(boolean showRawRequest) {
-        System.out.println("METHOD: " + method);
-        System.out.println("URI: " + uri);
-        System.out.println("PARAMS: " + params);
-        System.out.println("BODY: " + body);
-        if (showRawRequest) {
-            System.out.println(rawRequest);
-        }
+        logger.info("METHOD: {}", method);
+        logger.info("URI: {}", uri);
+        logger.info("PARAMS: {}", params);
+        logger.info("BODY: {}", body);
+        logger.debug(rawRequest);
     }
 }

@@ -24,4 +24,22 @@ public class ItemsStorage {
         item.setId(items.stream().mapToLong(Item::getId).max().orElse(0) + 1);
         items.add(item);
     }
+
+    public static void deleteItem(int id) {
+        for (Item item : items) {
+            if (item.getId() == id) {
+                items.remove(item);
+                break;
+            }
+        }
+    }
+
+    public static Item getItem(int id) {
+        for (Item item : items) {
+            if (item.getId() == id) {
+                return item;
+            }
+        }
+        return null;
+    }
 }
